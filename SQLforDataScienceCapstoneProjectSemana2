@@ -1,0 +1,72 @@
+1. Presente un resumen de los diferentes estadísticos descriptivos que ha analizado y POR QUÉ.
+import pandas as pd
+import matplotlib.pyplot as plt
+from pandasql import sqldf
+pysqldf = lambda q: sqldf(q, globals())
+
+import import_ipynb
+from week1_data_analysis import summer_events, winter_events
+Importamos todos los datos
+
+
+#Summer Olympics:
+print(pysqldf('''SELECT Sex,
+                        COUNT(*),            
+                        COUNT(*) * 100.0 / SUM(COUNT(*)) over () AS ratio
+                 FROM summer_events
+                 GROUP BY Sex'''))
+Sex  COUNT(*)      ratio
+0   F     59443  26.709713
+1   M    163109  73.290287
+
+#Winter Olympics:
+print(pysqldf('''SELECT Sex,
+                    COUNT(*),            
+                    COUNT(*) * 100.0 / SUM(COUNT(*)) over () AS ratio
+                 FROM winter_events
+                 GROUP BY Sex'''))
+ Sex  COUNT(*)      ratio
+0   F     15079  31.049749
+1   M     33485  68.950251
+
+#Summer Olympics:
+print(pysqldf('''SELECT Sex,
+                        AVG(Age),
+                        AVG(Height),
+                        AVG(Weight)
+                 FROM summer_events
+                 GROUP BY Sex
+                 '''))
+Sex   AVG(Age)  AVG(Height)  AVG(Weight)
+0   F  23.660997   168.169025    60.087644
+1   M  26.443944   178.901874    75.604195
+
+#Winter Olympics:
+print(pysqldf('''SELECT Sex,
+                        AVG(Age),
+                        AVG(Height),
+                        AVG(Weight)
+                 FROM winter_events
+                 GROUP BY Sex
+                 '''))
+  Sex   AVG(Age)  AVG(Height)  AVG(Weight)
+0   F  24.014398   166.528250    59.755156
+1   M  25.504261   178.668699    76.357058
+
+2. Presente 2-3 puntos clave que haya descubierto sobre los datos, por ejemplo, ¿nuevas relaciones? ¡Ajá! ¿Se le ocurrieron ideas adicionales para otras cosas que revisar?
+
+-Me di cuenta de que, en comparación con los Juegos Olímpicos de verano, la diferencia de edad entre los participantes masculinos y femeninos en los Juegos Olímpicos de invierno es menor.
+-Descubrí que en los Juegos Olímpicos recientes, el porcentaje de participantes que ganaron medallas y la proporción de medallas (oro:plata:bronce) se han estabilizado.
+-Me di cuenta de que existen diferencias importantes en el número de participantes en los dos Juegos Olímpicos (verano e invierno), por lo que hay que analizarlo por separado.
+
+3. ¿Probó o refutó alguna de sus hipótesis iniciales? En caso afirmativo, ¿cuál y qué piensa hacer a continuación?
+
+Mi primera suposición es que la proporción entre mujeres y hombres ha aumentado con el tiempo. Crearé una tabla de proporción de mujeres y hombres año por año y luego dibujaré un gráfico lineal para ver la relación.
+
+Su suposición parece ser correcta. De hecho, con el tiempo, la proporción entre hombres y mujeres ha disminuido. Sin embargo, hay un detalle interesante: durante la Segunda Guerra Mundial, la proporción de los 
+Juegos Olímpicos de verano cayó drásticamente, pero luego recuperó su impulso de crecimiento. Sin más análisis, no puedo explicar este fenómeno.
+
+4. ¿Qué preguntas adicionales pretende responder?
+Probaré mis próximas dos hipótesis con la ayuda de pruebas A/B. Estos supuestos son:
+H2: En los Juegos Olímpicos de Invierno, el desempeño anual de los diferentes países varía mucho.
+H3: El desempeño de un país en los Juegos Olímpicos de Invierno está relacionado con su desempeño en los Juegos Olímpicos de Verano.
